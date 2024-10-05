@@ -247,9 +247,12 @@ public class JULTest {
       我们可以使用更加清晰，更加专业的一种做法，就是使用配置文件
       如果我们没有自己添加配置文件，则会使用系统默认的配置文件
       这个配置文件：
-      owner.readPrimordialConfiguration();
-      readConfiguration();
-      java.home->找到jre文件夹->lib->logging.properties
+        owner.readPrimordialConfiguration();
+        readConfiguration();
+        java.home->找到jre文件夹->lib->logging.properties
+
+      做文件日志打印，新日志会覆盖掉原来的日志
+      但是我们现在的需求不是覆盖，而是追加
     */
     InputStream input = new FileInputStream("logging.properties");
 
