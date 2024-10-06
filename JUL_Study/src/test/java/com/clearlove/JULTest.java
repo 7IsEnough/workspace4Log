@@ -271,5 +271,17 @@ public class JULTest {
     logger.fine("fine信息");
     logger.finer("finer信息");
     logger.finest("finest信息");
+
+    /*
+          JUL日志框架使用方式总结（原理解析）
+              1.初始化LogManager
+              LogManager加载logging.properties配置文件
+              添加Logger到LogManager
+              2.从单例的LogManager获取Logger
+              3.设置日志级别Level,在打印的过程中使用到了日志记录的LogRecord类
+              4.Filter作为过滤器提供了日志级别之外更细粒度的控制
+              5.Handler日志处理器，决定日志的输出位置，例如控制台、文件..
+              6.Formatter是用来格式化输出的
+    */
   }
 }
