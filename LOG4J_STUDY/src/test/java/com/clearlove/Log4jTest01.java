@@ -95,8 +95,8 @@ public class Log4jTest01 {
             static final String APPENDER_PREFIX = "log4j.appender.";
 
             通过代码：
-            String prefix "1og4j.appender."+appenderName;
-            我们需要自定义一个appendername,我们起名叫做console
+            String prefix "log4j.appender."+appenderName;
+            我们需要自定义一个appenderName,我们起名叫做console
             (起名字也需要见名知意，console那么我们到时候的配置应该配置的就是控制台输出)
             log4j.appender.console
             取值就是log4j中为我们提供的appender类
@@ -183,6 +183,22 @@ public class Log4jTest01 {
 
             在log4j.properties中将layout设置为PatternLayout
             我们主要配置的是conversionPattern属性
+
+            %m 输出代码中指定的日志信息
+            %p 输出优先级，及DEBUG、INFO等
+            %n 换行符(windows平台的换行符为"\n",Unix平台为"\n")
+            %r 输出自应用启动到输出该log信息耗费的毫秒数
+            %c 输出打印语句所属的类的全名
+            %t 输出产生该日志的线程全名
+            %d 输出服务器当前时间，默认为ISO8601,也可以指定格式，如：%d{yyyy年MM月dd日 HH:mm:ss}
+            %1 输出日志时间发生的位置，包括类名、线程、及在代码中的行数。如：Test.main(Test.java:10)
+            %F 输出日志消息产生时所在的文件名称
+            %L 输出代码中的行号
+            %% 输出一个"%”字符
+
+            可以在%与字符之间加上修饰符来控制最小宽度、最大宽度和文本的对其方式
+            [%10p]：[]中必须有10个字符，由空格来进行补齐，信息右对齐
+            [%-10p]：[]中必须有10个字符，由空格来进行补齐，信息左对齐，应用较广泛
     */
 
     LogLog.setInternalDebugging(true);
@@ -197,5 +213,237 @@ public class Log4jTest01 {
 
 
   }
+
+  @Test
+  public void test05() {
+    /*
+      将日志信息偷出到文件中（以后所有的练习统一使用配置文件（不硬编码）)
+
+      之前我们在配置文件中配置的是输出到控制台相关的配置
+      那么我们可以直接将输出到控制台改变为输出到文件中
+      一般情况下我们也可以做多方向的输出，所以控制台的配置我们保留，但是可以选择不用
+      我们可以完全再来一套关于输出到文件的配置
+
+      日志文件要保存到哪个磁盘相关的配置
+      查看FileAppender的源码
+      看到属性信息
+      protected boolean fileAppend;表示是否追加信息，通过构造方法赋值为true
+      protected int bufferSize;缓冲区的大小，通过构造方法赋值为8192
+
+      如果有输出中文的需求怎么办
+      观察FileAppender的父类
+      找到protected string encoding;
+
+
+    */
+
+    LogLog.setInternalDebugging(true);
+    Logger logger = Logger.getLogger(Log4jTest01.class);
+
+    logger.fatal("fatal信息");
+    logger.error("error信息");
+    logger.warn("warn信息");
+    logger.info("info信息");
+    logger.debug("debug信息");
+    logger.trace("trace信息");
+  }
+
+  @Test
+  public void test06() {
+    /*
+      将日志输出到文件中
+        日志太多了，不方便管理和维护怎么办
+        FileAppender为我们提供了好用的子类来进一步的对于文件输出进行处理
+        RollingFileAppender
+        DailyRollingFileAppender
+
+      1.先来学习RollingFileAppender
+        这个类表示使用按照文件大小进行拆分的方式进行操作
+        配置文件进行RollingFileAppender相关配置
+
+      # 指定日志文件内容大小
+      log4j.appender.rollingFile.maxFilesize=1MB
+      # 指定日志文件的数量
+      log4j.appender.rollingFile.maxBackupIndex=5
+
+      只要文件超过1MB,那么则生成另外一个文件，文件的数量最多是5个
+      文件1 记录日志 1MB
+      文件2 记录日志 1MB
+      ...
+      文件5
+
+      如果5个文件不够怎么办，作为日志管理来讲，也不可能让日志无休止的继续增长下去
+      所以，覆盖文件的策略是，按照时间来进行覆盖，原则就是保留新的，覆盖旧的
+
+      2.DailyRollingFileAppender
+        按照时间来进行文件的拆分
+        查看源码属性：
+        private string datePattern="'.'yyyy-MM-dd";默认是按照天来进行拆分的
+
+        注意：
+          我们在练习的时候，可以根据秒来制定拆分策略
+          但是实际生产环境中，根据秒生成日志文件是绝对不可能的
+          如果是大型的项目，可以根据天进行拆分
+          或者如果是小型的项目，可以根据周，月进行拆分
+    */
+
+    LogLog.setInternalDebugging(true);
+    Logger logger = Logger.getLogger(Log4jTest01.class);
+
+    for(int i = 0; i < 10000; i++) {
+      logger.fatal("fatal信息");
+      logger.error("error信息");
+      logger.warn("warn信息");
+      logger.info("info信息");
+      logger.debug("debug信息");
+      logger.trace("trace信息");
+    }
+
+
+  }
+
+  @Test
+  public void test07() {
+
+    /*
+      将日志持久化到数据库表中
+
+        创建表结构：（字段的制定可以根据需求进行调整）
+
+        CREATE TABLE tbl_log(
+        id int(11) NOT NULL AUTO_INCREMENT,
+        name varchar(255)DEFAULT NULL COMMENT '项目名称',
+        createTime varchar(255) DEFAULT NULL COMMENT '创建时间',
+        level varchar(255) DEFAULT NULL COMMENT '日志级别',
+        category varchar(255) DEFAULT NULL COMMENT '所在类的全路径',
+        fileName varchar(255) DEFAULT NULL COMMENT '文件名称',
+        message varchar(255) DEFAULT NULL COMMENT '日志消息',
+        PRIMARY KEY(id));
+    */
+
+    LogLog.setInternalDebugging(true);
+    Logger logger = Logger.getLogger(Log4jTest01.class);
+
+      logger.fatal("fatal信息");
+      logger.error("error信息");
+      logger.warn("warn信息");
+      logger.info("info信息");
+      logger.debug("debug信息");
+      logger.trace("trace信息");
+
+
+  }
+
+  @Test
+  public void test08() {
+
+    /*
+      Log4j的自定义logger
+        我们以前所创建出来的Logger对象，默认都是继承rootLogger的
+        我们也可以自定义logger,让其他logger来继承这个logger
+
+        这种继承关系就是按照包结构的关系来进行指定的
+        例如我们一直使用的
+        Logger logger = Logger.getLogger(Log4jTest01.class);
+        路径就是：com.clearlove.Log4jTest01
+        它的父logger就是上层的路径或者是更上层的路径
+        例如：
+        com.clearlove
+        com
+
+        参照logger是如何加载配置文件的
+        查看PropertyConfigurator的源码
+        得到信息log4j.logger.
+        这个属性值log4j.logger.就是我们在配置文件中对于自定logger的配置属性
+
+        假设我们现在的配置是这样的：
+
+        # 配置根节点logger
+        log4j.rootLogger=trace,console
+
+        # 配置自定义logger
+        log4j.logger.com.clearlove=info,file
+
+        观察结果：
+          从输出位置来看，控制台输出了信息，日志文件也输出了信息
+          所以可以得出结论，如果根节点的logger和自定义父logger配置的输出位置是不同的
+          则取二者的并集，配置的位置都会进行输出操作
+
+          如果二者配置的日志级别不同，主要以按照我们自定的父logger的级别输出为主
+    */
+
+    LogLog.setInternalDebugging(true);
+    Logger logger = Logger.getLogger(Log4jTest01.class);
+
+    logger.fatal("fatal信息");
+    logger.error("error信息");
+    logger.warn("warn信息");
+    logger.info("info信息");
+    logger.debug("debug信息");
+    logger.trace("trace信息");
+
+
+  }
+
+  @Test
+  public void test09() {
+      /*
+
+      自定义logger的应用场景
+        我们之所以要自定义logger,就是为了针对不同系统信息做更加灵活的输出操作
+        例如：
+          我们可以在原有案例的基础之上，加上一个apache的日志输出
+          log4j.logger.org.apache=error,console
+
+          我们现在在配置文件中配置的logger有如下3项
+
+          # 配置根节点logger
+          log4j.rootLogger=trace,console
+          # 配置自定义logger
+          log4j.logger.com.clearlove=info,file
+          # 配置apache的logger
+          log4j.logger.org.apache=error,console
+      */
+
+
+    /*
+        当前的类路径com.clearlove.Log4jTest01
+        在配置文件中所找到的能够作用的父logger和根logger
+        log4j.rootLogger=trace,console
+        log4j.logger.com.clearlove.log4j.test=info,file
+        我们刚才配置的apache的路径和我们的com.clearlove.Log4jTest01不相符
+        不构成父子关系，所以没有执行apache相关的配置
+    */
+    LogLog.setInternalDebugging(true);
+    Logger logger = Logger.getLogger(Log4jTest01.class);
+
+    logger.fatal("fatal信息");
+    logger.error("error信息");
+    logger.warn("warn信息");
+    logger.info("info信息");
+    logger.debug("debug信息");
+    logger.trace("trace信息");
+
+    /*
+      org.apache.log4j.Logger
+        console在根节点中进行了配置
+        在apache中也进行了配置
+        由于输出的位置appender取的是并集
+        所以，既然都配置了，那么就输出了两次
+    */
+    Logger logger1 = Logger.getLogger(Logger.class);
+
+    logger1.fatal("fatal信息 --");
+    logger1.error("error信息 --");
+    logger1.warn("warn信息 --");
+    logger1.info("info信息 --");
+    logger1.debug("debug信息 --");
+    logger1.trace("trace信息 --");
+
+  }
+
+
+
+
 
 }
