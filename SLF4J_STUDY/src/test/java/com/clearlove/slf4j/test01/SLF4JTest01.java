@@ -215,4 +215,44 @@ public class SLF4JTest01 {
     logger.error("error信息");
 
   }
+
+  @Test
+  public void test08() {
+
+    /*
+      绑定多个日志实现，会出现警告信息
+      通过源码来看看其原理（看看slf4j的执行原理）
+
+      进入到getLogger
+      Logger logger = getLogger(clazz.getName());
+
+      进入重载的getLogger
+      ILoggerFactory iLoggerFactory=getILoggerFactory();用来取得Logger工厂实现的方法
+
+      进入getILoggerFactory()
+      看到以双重检查锁的方式去做判断
+      执行performInitialization();工厂的初始化方法
+
+      进入performInitialization()
+      bind()就是用来绑定具体日志实现的方法
+
+      进入bind()
+      看到Set集合Set<URL>staticLoggerBinderPathSet=null;
+      因为当前有可能会有N多个日志框架的实现
+      staticLoggerBinderPathSet findPossibleStaticLoggerBinderPathSet();
+
+      findPossibleStaticLoggerBinderPathSet()
+      看到创建了一个有序不可重复的集合对象
+      LinkedHashset staticLoggerBinderPathSet = new LinkedHashset();
+      声明了枚举类的路径，经过if else判断，以获取系统中都有哪些日志实现
+      看到Enumeration paths;
+      if (loggerFactoryClassLoader =null){
+      paths = ClassLoader.getSystemResources(STATIC_LOGGER_BINDER_PATH);
+      else
+      paths = loggerFactoryClassLoader.getResources(STATIC_LOGGER_BINDER_PATH);
+
+     */
+
+  }
+
 }
