@@ -101,6 +101,7 @@ public class SLF4JTest01 {
         通过适配桥接的技术，完成与日志门面的衔接
 
       试着将logback日志框架集成进来
+
       测试1：
         在原有slf4j-simple日志实现的基础上，又集成了logback
         通过测试，日志是打印出来了java.lang.ClassNotFoundException:aaa
@@ -112,6 +113,17 @@ public class SLF4JTest01 {
         如果先导入logback依赖，后导入slf4j-simple依赖
         那么默认使用的就是logback依赖
         如果有多个日志实现的话，默认使用先导入的实现
+
+      测试2：
+        将slf4j-simple注释掉
+        只留下logback,那么slf4j门面使用的就是logback日志实现
+        值得一提的是，这一次没有多余的提示信息
+        所以在实际应用的时候，我们一般情况下，仅仅只是做一种日志实现的集成就可以了
+
+        通过这个集成测试，我们会发现虽然底层的日志实现变了，但是源代码完全没有改变
+        这就是日志门面给我们带来最大的好处
+        在底层真实记录日志的时候，不需要应用去做任何的了解
+        应用只需要去记slf4j的API就可以了
      */
 
     Logger logger = LoggerFactory.getLogger(SLF4JTest01.class);
@@ -122,4 +134,62 @@ public class SLF4JTest01 {
     }
   }
 
+  @Test
+  public void test05() {
+    /*
+
+      使用slf4j-nop
+        表示不记录日志
+        在我们使用slf4j-nop的时候
+        首先还是需要导入实现依赖
+        这个实现依赖，根据我们之前所总结出来的日志日志实现种类的第二种
+        与logback和simple是属于一类的
+        通过集成依赖的顺序而定
+        所以如果想要让nop发挥效果，禁止所有日志的打印
+        那么就必须要将slf4j-nop的依赖放在所日志实现依赖的上方
+
+     */
+    Logger logger = LoggerFactory.getLogger(SLF4JTest01.class);
+    try {
+      Class.forName("aaa");
+    } catch (Exception e) {
+      logger.info("具体错误：", e);
+    }
+  }
+
+  @Test
+  public void test06() {
+    /*
+
+     接下来我们来绑定log4j
+     由于log4j是在slf4j之前出品的日志框架实现
+     所以并没有遵循slf4j的API规范
+     (之前集成的logback,是slf4j之后出品的日志框架实现
+     logback就是按照slf4j的标准指定的API,所以我们导入依赖就能用)
+
+     如果想要使用，需要绑定一个适配器
+     叫做slf4j-log4j12
+     再导入log4j的实现
+
+     log4j:WARN No appenders could be found for logger (com.clearlove.slf4j.test01.SLF4JTest01).
+     log4j:WARN Please initialize the log4j system properly.
+     log4j:WARN See http://logging.apache.org/log4j/1.2/faq.html#noconfig for more info.
+
+     虽然日志信息没有打印出来，那么根据警告信息可以得出：
+     使用了log4j日志实现框架
+     提示appender没有加载，需要在执行日志之前做相应的加载工作（初始化）
+     我们可以将log4j的配置文件导入使用
+
+     值得一提的是，我们虽然底层使用的是log4j做的打印，但是从当前代码使用来看
+     我们其实使用的仍然是slf4j日志门面，至于日志是log4j打印的（或者是logback打印的）
+     都是由slf4j进行操作的，我们不用操心
+    */
+
+    Logger logger = LoggerFactory.getLogger(SLF4JTest01.class);
+    logger.trace("trace信息");
+    logger.debug("debug信息");
+    logger.info("info信息");
+    logger.warn("warn信息");
+    logger.error("error信息");
+  }
 }
