@@ -27,19 +27,25 @@
       <version>1.7.25</version>
     </dependency>
 
-    <!--导入log4j适配器依赖-->
     <dependency>
       <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
+      <artifactId>slf4j-jdk14</artifactId>
       <version>1.7.25</version>
     </dependency>
 
+    <!--导入log4j适配器依赖-->
+    <!--<dependency>-->
+    <!--  <groupId>org.slf4j</groupId>-->
+    <!--  <artifactId>slf4j-log4j12</artifactId>-->
+    <!--  <version>1.7.25</version>-->
+    <!--</dependency>-->
+
     <!--导入Log4j依赖-->
-    <dependency>
-      <groupId>log4j</groupId>
-      <artifactId>log4j</artifactId>
-      <version>1.2.17</version>
-    </dependency>
+    <!--<dependency>-->
+    <!--  <groupId>log4j</groupId>-->
+    <!--  <artifactId>log4j</artifactId>-->
+    <!--  <version>1.2.17</version>-->
+    <!--</dependency>-->
 
     <!--导入nop-->
     <!--<dependency>-->

@@ -192,4 +192,27 @@ public class SLF4JTest01 {
     logger.warn("warn信息");
     logger.error("error信息");
   }
+
+  @Test
+  public void test07() {
+
+    /*
+        接下来我们来适配JDKl4
+          与上一个测试log4j导入适配器一样
+          JUL也是slf4j之前出品的日志实现框架
+          所以也需要相应的适配器
+          适配器导入之后，JUL日志实现是不用导入依赖的
+          因为JUL,是JDK内置的
+
+        从测试结果来看，是JUL的日志打印，默认是info级别日志的输出
+
+     */
+    Logger logger = LoggerFactory.getLogger(SLF4JTest01.class);
+    logger.trace("trace信息");
+    logger.debug("debug信息");
+    logger.info("info信息");
+    logger.warn("warn信息");
+    logger.error("error信息");
+
+  }
 }
