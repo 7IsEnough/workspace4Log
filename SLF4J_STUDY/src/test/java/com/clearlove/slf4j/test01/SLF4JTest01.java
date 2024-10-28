@@ -251,6 +251,16 @@ public class SLF4JTest01 {
       else
       paths = loggerFactoryClassLoader.getResources(STATIC_LOGGER_BINDER_PATH);
 
+      我们主要观察常量STATIC LOGGER BINDER PATH
+      通过常量我们会找到类staticLoggerBinder
+      这个类是以静态的方式绑定Logger实现的类
+      来自slf4j-JDK14的适配器
+      进入staticLoggerBinder
+      看到new JDK14 LoggerFactory();
+      进入JDK14LoggerFactory类的无参构造方法
+      java.util.logging.Logger.getLogger("");
+      使用的就是jul的Logger
+
      */
 
   }
