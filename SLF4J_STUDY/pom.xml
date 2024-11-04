@@ -29,9 +29,15 @@
 
     <dependency>
       <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-jdk14</artifactId>
+      <artifactId>log4j-over-slf4j</artifactId>
       <version>1.7.25</version>
     </dependency>
+
+    <!--<dependency>-->
+    <!--  <groupId>org.slf4j</groupId>-->
+    <!--  <artifactId>slf4j-jdk14</artifactId>-->
+    <!--  <version>1.7.25</version>-->
+    <!--</dependency>-->
 
     <!--导入log4j适配器依赖-->
     <!--<dependency>-->
@@ -55,11 +61,11 @@
     <!--</dependency>-->
 
     <!--logback依赖-->
-    <!--<dependency>-->
-    <!--  <groupId>ch.qos.logback</groupId>-->
-    <!--  <artifactId>logback-classic</artifactId>-->
-    <!--  <version>1.2.3</version>-->
-    <!--</dependency>-->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.2.3</version>
+    </dependency>
 
     <!--slf4j 自带的简单日志实现-->
     <!--<dependency>-->
