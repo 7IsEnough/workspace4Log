@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+
+    <!--
+      配置文件通用属性
+      <property name="" value="" />
+      所谓配置文件中的通用属性是为了让接下来的配置更加方便引用
+      通过以${name}的形式，方便的取得value值
+      通过取得的value值可以做文件的其他配置而使用
+
+    -->
+
+  <!--
+      我们在此可以先做日志输出格式相关的配置
+      %-10level 级别  案例为设置10个字符，左对齐
+      %d{yyyy-MM-dd HH:mm:ss.SSS} 日期
+      %c  当前类全限定名
+      %M  当前执行日志的方法
+      %L  行号
+      %thread  线程名称
+      %m或者%msg  信息
+      %n  换行
+
+      以property的形式将日志输出格式配置成为文件的通用的属性
+      那么下面我们配置的输出方式中，就可以重复的引用该配置（以下的配置，对于输出格式就不用配置多次了)
+  -->
+  <property name="pattern" value="[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} %c %M %L %thread %m%n" />
+
+
+</configuration>
