@@ -12,7 +12,7 @@
   <Appenders>
 
     <!--配置控制台输出-->
-    <Console name="consoleAppender" target="SYSTEM_OUT">
+    <Console name="consoleAppender" target="SYSTEM_ERR">
     </Console>
 
     <!--配置文件输出-->
@@ -95,11 +95,11 @@
         表示不继承rootlogger
 
     -->
-    <AsyncLogger name="com.clearlove" level="trace" includeLocation="false" additivity="false">
+    <!--<AsyncLogger name="com.clearlove" level="trace" includeLocation="false" additivity="false">-->
 
 
-      <AppenderRef ref="consoleAppender"/>
+    <!--  <AppenderRef ref="consoleAppender"/>-->
 
-    </AsyncLogger>
+    <!--</AsyncLogger>-->
   </Loggers>
 </Configuration>
